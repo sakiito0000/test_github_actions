@@ -20,9 +20,11 @@ jobs:
         run: |
           releasePrTitle=$(gh pr list --state merged --label "release" --limit 1 --json title --jq '.[0].title')
           echo "Latest PR title: $releasePrTitle"
-          echo "sprintNumber=$(echo releasePrTitle | awk '{print $2}') >> "$GITHUB_OUTPUT"
-          echo "releaseVersion=$(echo releasePrTitle | awk '{print $3}') >> "$GITHUB_OUTPUT"
+          echo "sprintNumber=$(echo $releasePrTitle | awk '{print $2}') >> "$GITHUB_OUTPUT"
+          echo "releaseVersion=$(echo $releasePrTitle | awk '{print $3}') >> "$GITHUB_OUTPUT"
           echo "releasePrCount=$(gh pr list --label "release" | wc -l)"  >> "$GITHUB_OUTPUT"
+          echo $releasePrTitle | awk '{print $2}'
+          echo $releasePrTitle | awk '{print $3}'
 
       - name: Create Develop Base Pull Request
         if: ${{ steps.check_pull_request.outputs.releasePrCount == 0 }}
