@@ -32,7 +32,7 @@ jobs:
           --title 'Sprint ${{ steps.check_pull_request.outputs.sprintNumber }} ${{ steps.check_pull_request.outputs.releaseVersion }} staging → develop' \
           --body '本番リリース後のdevelopブランチ反映です。'  \
           --label release \
-          --assignee @sakiito0000
+          --assignee sakiito0000
 
       - name: Create Update Base Pull Request
         if: ${{ steps.check_pull_request.outputs.releasePrCount == 0 }}
@@ -43,4 +43,4 @@ jobs:
           --title 'Sprint ${{ steps.check_pull_request.outputs.sprintNumber }} ${{ steps.check_pull_request.outputs.releaseVersion }} staging → update' \
           --body '本番リリース後のupdateブランチ反映です。'  \
           --label release \
-          --assignee @sakiito0000
+          --assignee sakiito0000
