@@ -1,0 +1,42 @@
+name: Create Staging Pull Request
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-staging-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Pull Request Exists
+        id: check_pull_request
+        run: |
+          releasePrTitle=$(gh pr list --label "release" --limit 1 --json title'.[0].title')
+          echo "sprintNumber=$(echo releasePrTitle | awk '{print $2}') >> "$GITHUB_OUTPUT"
+          echo "releaseVersion=$(echo releasePrTitle | awk '{print $3}') >> "$GITHUB_OUTPUT"
+          echo "releasePrCount=$(gh pr list --label "release" | wc -l)"  >> "$GITHUB_OUTPUT"
+
+      - name: Create Develop Base Pull Request
+        if: ${{ steps.check_pull_request.outputs.releasePrCount == 0 }}
+        run: |
+          gh pr create \
+          --base develop \
+          --head staging \
+          --title 'Sprint ${{ steps.check_pull_request.outputs.sprintNumber }} ${{ steps.check_pull_request.outputs.releaseVersion }} staging → develop' \
+          --body '本番リリース後のdevelopブランチ反映です。'  \
+          --label release \
+          --assignee @sakiito0000
+
+      - name: Create Update Base Pull Request
+        if: ${{ steps.check_pull_request.outputs.releasePrCount == 0 }}
+        run: |
+          gh pr create \
+          --base update \
+          --head staging \
+          --title 'Sprint ${{ steps.check_pull_request.outputs.sprintNumber }} ${{ steps.check_pull_request.outputs.releaseVersion }} staging → update' \
+          --body '本番リリース後のupdateブランチ反映です。'  \
+          --label release \
+          --assignee @sakiito0000
