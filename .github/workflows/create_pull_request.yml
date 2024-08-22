@@ -25,26 +25,22 @@ jobs:
 
       - name: Create Develop Base Pull Request
         if: ${{ steps.check_pull_request.outputs.releasePrCount == 0 }}
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Sprint ${{ steps.check_pull_request.outputs.sprintNumber }} ${{ steps.check_pull_request.outputs.releaseVersion }} staging → develop"
-          body: "本番リリース後のdevelopブランチ反映です。"
-          branch: develop
-          base: staging
-          draft: false
-          labels: release
-          assignees: sakiito0000
+        run: |
+          gh pr create \
+          --base develop \
+          --head staging \
+          --title 'Sprint ${{ steps.check_pull_request.outputs.sprintNumber }} ${{ steps.check_pull_request.outputs.releaseVersion }} staging → develop' \
+          --body '本番リリース後のdevelopブランチ反映です。'  \
+          --label release \
+          --assignee sakiito0000
 
       - name: Create Update Base Pull Request
         if: ${{ steps.check_pull_request.outputs.releasePrCount == 0 }}
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Sprint ${{ steps.check_pull_request.outputs.sprintNumber }} ${{ steps.check_pull_request.outputs.releaseVersion }} staging → update"
-          body: "本番リリース後のupdateブランチ反映です。"
-          branch: update
-          base: staging
-          draft: false
-          labels: release
-          assignees: sakiito0000
+        run: |
+          gh pr create \
+          --base update \
+          --head staging \
+          --title 'Sprint ${{ steps.check_pull_request.outputs.sprintNumber }} ${{ steps.check_pull_request.outputs.releaseVersion }} staging → update' \
+          --body '本番リリース後のupdateブランチ反映です。'  \
+          --label release \
+          --assignee sakiito0000
